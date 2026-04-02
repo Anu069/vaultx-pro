@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}VaultX Pro{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+{% if session.user_id %}
+<nav class="vx-nav">
+  <div class="container-fluid px-4 d-flex align-items-center justify-content-between" style="height:100%">
+    <a class="vx-brand" href="{{ url_for('dashboard') }}">
+      <span class="vx-brand-icon"><i class="bi bi-shield-lock-fill"></i></span>
+      VAULT<span class="vx-brand-x">X</span>
+    </a>
+    <div class="vx-nav-links">
+      <a href="{{ url_for('dashboard') }}" class="vx-nl {% if request.endpoint=='dashboard' %}active{% endif %}">
+        <i class="bi bi-grid-fill"></i><span>Vault</span>
+      </a>
+      <a href="{{ url_for('add_password') }}" class="vx-nl {% if request.endpoint=='add_password' %}active{% endif %}">
+        <i class="bi bi-plus-circle-fill"></i><span>Add</span>
+      </a>
+      <a href="{{ url_for('file_vault') }}" class="vx-nl {% if request.endpoint=='file_vault' %}active{% endif %}">
+        <i class="bi bi-folder-fill"></i><span>Files</span>
+      </a>
+      <a href="{{ url_for('analytics') }}" class="vx-nl {% if request.endpoint=='analytics' %}active{% endif %}">
+        <i class="bi bi-bar-chart-fill"></i><span>Stats</span>
+      </a>
+      <a href="{{ url_for('audit_log') }}" class="vx-nl {% if request.endpoint=='audit_log' %}active{% endif %}">
+        <i class="bi bi-journal-text"></i><span>Logs</span>
+      </a>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <span class="vx-user"><i class="bi bi-person-circle me-1"></i>{{ session.username }}</span>
+      <a href="{{ url_for('logout') }}" class="vx-logout"><i class="bi bi-power"></i></a>
+    </div>
+  </div>
+</nav>
+{% endif %}
+
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container-fluid px-4 pt-3">
+      {% for cat, msg in messages %}
+      <div class="vx-alert vx-alert-{{ cat }} alert-dismissible fade show">
+        <i class="bi bi-{% if cat=='success' %}check-circle{% elif cat=='danger' %}exclamation-triangle{% elif cat=='warning' %}exclamation-circle{% else %}info-circle{% endif %}-fill me-2"></i>
+        {{ msg }}
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+{% if session.user_id %}
+<footer class="vx-footer">
+  <span><i class="bi bi-shield-lock-fill me-2"></i>VaultX Pro &mdash; Developed by <strong>Aryan Sharma</strong></span>
+  <span class="vx-footer-right">🔒 All data encrypted with AES-128</span>
+</footer>
+{% endif %}
+
+<div class="vx-toast" id="vxToast">Copied!</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('vxToast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1800);
+  });
+}
+function toggleVis(id, btn) {
+  const inp = document.getElementById(id);
+  const icon = btn.querySelector('i');
+  if (inp.type === 'password') { inp.type = 'text'; icon.className = 'bi bi-eye-slash-fill'; }
+  else { inp.type = 'password'; icon.className = 'bi bi-eye-fill'; }
+}
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}VaultX — File Vault{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <h2 class="vx-page-title mb-1"><i class="bi bi-folder-fill me-2"></i>Secure File Vault</h2>
+  <p class="vx-page-sub mb-4">Upload photos, videos & documents — all encrypted with AES-128</p>
+
+  <!-- Upload -->
+  <div class="vx-card mb-4">
+    <form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data">
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="vx-file-pick">
+          <input type="file" name="file" id="fileInp" class="vx-file-input" required
+                 onchange="document.getElementById('fileName').textContent=this.files[0]?.name||'No file chosen'"/>
+          <label for="fileInp" class="vx-file-label">
+            <i class="bi bi-cloud-upload-fill me-2"></i>Choose File
+          </label>
+        </div>
+        <span class="vx-file-name" id="fileName">No file chosen</span>
+        <button type="submit" class="vx-btn-primary px-4 ms-auto">
+          <i class="bi bi-lock-fill me-2"></i>Encrypt & Upload
+        </button>
+      </div>
+      <p class="vx-page-sub mt-2 mb-0">Supported: Images, Videos, PDFs, Documents (Max 50MB)</p>
+    </form>
+  </div>
+
+  <!-- Files Grid -->
+  {% if files %}
+  <div class="row g-3">
+    {% for f in files %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="vx-file-card">
+        <div class="vx-file-icon">
+          {% if 'image' in f.file_type %}<i class="bi bi-file-image-fill" style="color:#00e5ff"></i>
+          {% elif 'video' in f.file_type %}<i class="bi bi-file-play-fill" style="color:#a78bfa"></i>
+          {% elif 'pdf' in f.file_type %}<i class="bi bi-file-pdf-fill" style="color:#ef4444"></i>
+          {% else %}<i class="bi bi-file-earmark-fill" style="color:var(--vx-gold)"></i>{% endif %}
+        </div>
+        <p class="vx-file-name-card" title="{{ f.original_name }}">{{ f.original_name }}</p>
+        <p class="vx-file-date">{{ f.uploaded_at[:10] }}</p>
+        <div class="d-flex gap-2 mt-2">
+          <a href="{{ url_for('view_file', fid=f.id) }}" class="vx-btn-primary flex-fill text-center" style="font-size:0.75rem;padding:.4rem">
+            <i class="bi bi-eye-fill me-1"></i>View
+          </a>
+          <form method="POST" action="{{ url_for('delete_file', fid=f.id) }}"
+                onsubmit="return confirm('Delete this file?')" style="flex:1">
+            <button type="submit" class="vx-del w-100" style="height:100%"><i class="bi bi-trash3-fill"></i></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="vx-empty">
+    <i class="bi bi-folder2-open vx-empty-icon"></i>
+    <p>No files uploaded yet</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}VaultX — Verify OTP{% endblock %}
+{% block content %}
+<div class="vx-auth-wrap">
+  <div class="vx-auth-bg-fx"></div>
+  <div class="vx-auth-card">
+    <div class="vx-auth-logo" style="background:var(--vx-gold)"><i class="bi bi-envelope-check-fill" style="color:#000"></i></div>
+    <h1 class="vx-auth-title">Verify OTP</h1>
+    <p class="vx-auth-sub">OTP sent to <strong>{{ email }}</strong></p>
+    <form method="POST" class="mt-4">
+      <div class="mb-4">
+        <label class="vx-lbl">Enter 6-Digit OTP</label>
+        <input type="text" name="otp" class="vx-inp text-center vx-otp-input"
+               placeholder="— — — — — —" maxlength="6" required autofocus
+               style="font-size:1.5rem;letter-spacing:8px;padding-left:1rem"/>
+      </div>
+      <button type="submit" class="vx-btn-primary w-100">
+        <i class="bi bi-check-circle-fill me-2"></i>Verify OTP
+      </button>
+    </form>
+    <p class="vx-auth-sub mt-3" style="font-size:0.75rem">
+      Didn't receive OTP? Check spam folder. OTP expires in 10 minutes.
+    </p>
+  </div>
+</div>
+{% endblock %}

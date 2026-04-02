@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}VaultX — Login{% endblock %}
+{% block content %}
+<div class="vx-auth-wrap">
+  <div class="vx-auth-bg-fx"></div>
+  <div class="vx-auth-card">
+    <div class="vx-auth-logo"><i class="bi bi-shield-lock-fill"></i></div>
+    <h1 class="vx-auth-title">VAULT<span style="color:var(--vx-gold)">X</span></h1>
+    <p class="vx-auth-sub">Your encrypted password vault</p>
+    <form method="POST" class="mt-4" autocomplete="off">
+      <div class="mb-3">
+        <label class="vx-lbl">Email Address</label>
+        <div class="vx-ig"><span class="vx-ii"><i class="bi bi-envelope-fill"></i></span>
+        <input type="email" name="email" class="vx-inp" placeholder="your@email.com" required autofocus/></div>
+      </div>
+      <div class="mb-4">
+        <label class="vx-lbl">Password</label>
+        <div class="vx-ig"><span class="vx-ii"><i class="bi bi-key-fill"></i></span>
+        <input type="password" name="password" id="loginPw" class="vx-inp" placeholder="Master password" required/>
+        <button type="button" class="vx-eye" onclick="toggleVis('loginPw',this)"><i class="bi bi-eye-fill"></i></button></div>
+      </div>
+      <button type="submit" class="vx-btn-primary w-100"><i class="bi bi-unlock-fill me-2"></i>Unlock Vault</button>
+    </form>
+    <p class="vx-auth-switch">New here? <a href="{{ url_for('register') }}">Create Account</a></p>
+  </div>
+</div>
+{% endblock %}

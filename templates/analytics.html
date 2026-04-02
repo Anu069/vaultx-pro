@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}VaultX — Analytics{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+  <h2 class="vx-page-title mb-1"><i class="bi bi-bar-chart-fill me-2"></i>Security Analytics</h2>
+  <p class="vx-page-sub mb-4">Overview of your vault security health</p>
+
+  <!-- Stats Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="vx-stat-card">
+        <div class="vx-stat-icon" style="background:rgba(0,229,255,.15);color:var(--vx-accent)"><i class="bi bi-key-fill"></i></div>
+        <div class="vx-stat-num">{{ total }}</div>
+        <div class="vx-stat-lbl">Total Passwords</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="vx-stat-card">
+        <div class="vx-stat-icon" style="background:rgba(239,68,68,.15);color:#ef4444"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <div class="vx-stat-num" style="color:#ef4444">{{ strength.Weak }}</div>
+        <div class="vx-stat-lbl">Weak Passwords</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="vx-stat-card">
+        <div class="vx-stat-icon" style="background:rgba(34,197,94,.15);color:#22c55e"><i class="bi bi-shield-check-fill"></i></div>
+        <div class="vx-stat-num" style="color:#22c55e">{{ strength['Very Strong'] + strength.Strong }}</div>
+        <div class="vx-stat-lbl">Strong Passwords</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="vx-stat-card">
+        <div class="vx-stat-icon" style="background:rgba(245,158,11,.15);color:var(--vx-gold)"><i class="bi bi-folder-fill"></i></div>
+        <div class="vx-stat-num" style="color:var(--vx-gold)">{{ categories|length }}</div>
+        <div class="vx-stat-lbl">Categories</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <!-- Strength Breakdown -->
+    <div class="col-md-6">
+      <div class="vx-card">
+        <h5 class="vx-card-title mb-3"><i class="bi bi-shield-half me-2"></i>Password Strength</h5>
+        {% set items = [('Very Strong','#00e5ff',strength['Very Strong']),('Strong','#22c55e',strength.Strong),('Moderate','#f59e0b',strength.Moderate),('Weak','#ef4444',strength.Weak)] %}
+        {% for label, color, count in items %}
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span style="color:{{ color }};font-size:0.82rem;font-weight:600">{{ label }}</span>
+            <span style="color:var(--vx-muted);font-size:0.8rem">{{ count }} / {{ total }}</span>
+          </div>
+          <div class="vx-str-track">
+            <div class="vx-str-bar" style="width:{{ (count/total*100) if total else 0 }}%;background:{{ color }}"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="col-md-6">
+      <div class="vx-card">
+        <h5 class="vx-card-title mb-3"><i class="bi bi-folder-fill me-2"></i>By Category</h5>
+        {% if categories %}
+          {% for cat, count in categories.items() %}
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="vx-cat vx-cat-{{ cat|lower }}">{{ cat }}</span>
+            <div class="d-flex align-items-center gap-2" style="flex:1;margin-left:1rem">
+              <div class="vx-str-track" style="flex:1">
+                <div class="vx-str-bar" style="width:{{ (count/total*100) if total else 0 }}%;background:var(--vx-gold)"></div>
+              </div>
+              <span style="font-size:0.8rem;color:var(--vx-muted);min-width:20px">{{ count }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No credentials yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
